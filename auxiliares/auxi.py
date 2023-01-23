@@ -1,3 +1,10 @@
+#######################################
+# Imports y asignaciones importantes   
+# version: 0.1.8                                     
+# fecha: 14-01-2023                         
+# ultima modificacion: 23-01-2023
+# Gabriel Aillapan                                    
+#######################################
 from pyspark.sql.types import *
 
 #La función sel_num_cols(dataframe) toma un dataframe de pyspark como entrada y devuelve una lista con los nombres de las columnas que son de tipo numérico.

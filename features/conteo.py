@@ -1,3 +1,11 @@
+#######################################
+# Imports y asignaciones importantes   
+# version: 0.1.8                                     
+# fecha: 14-01-2023                         
+# ultima modificacion: 23-01-2023
+# Gabriel Aillapan                                    
+#######################################
+
 from auxiliares.auxi import sel_num_cols
 from validaciones import df_has_null
 from pyspark.sql.functions import count , sum , avg
