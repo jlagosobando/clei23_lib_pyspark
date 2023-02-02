@@ -8,35 +8,65 @@
 
 from pyspark.sql.functions import col
 from pyspark.sql.types import *
+from validaciones import is_dataframe 
+import re 
+def inferSchema(dataframe):
+    """
+    Esta función recibe un dataframe de PySpark, una columna a ser imputada y una columna auxiliar. 
+    La función devuelve el dataframe con la columna de imputación llenada con el promedio de los valores 
+    de la columna de imputación agrupados por la columna auxiliar. Si el valor de la columna de imputación
+    no es nulo, se mantiene el mismo valor.
 
-# TODO: hacer mas pruebas y verificaciones | Hacer validaciones de Long to Short 
-#La función itera sobre cada columna del DataFrame de entrada y selecciona el primer valor de cada una.
-#  Luego, utiliza una serie de condicionales para determinar el tipo de datos de la columna.
-#  Si el primer valor contiene un punto, se asume que es un número de tipo DoubleType.
-#  Si contiene un guión, se asume que es una fecha de tipo DateType.
-#  Si contiene una barra, se asume que es una fecha de tipo DateType.
-#  Si el nombre de la columna es "Date", se asume que es una fecha de tipo DateType.
-#  Si contiene "True" o "False", se asume que es un valor booleano de tipo BooleanType.
-#  Si el primer valor es numérico, se asume que es un número de tipo IntegerType.
-#  Si no cumple con ninguna de las condiciones anteriores, se asume que es una cadena de caracteres de tipo StringType.
-#Una vez que se ha inferido el tipo de datos para cada columna, se aplica el cast correspondiente y se devuelve el DataFrame con el esquema inferido.
-def new_infer_schema_v5(dataframe):
-    for columna in dataframe.columns: 
-        first_value = dataframe.select(col(columna)).first()[0]
-        if "." in first_value: 
-            dataframe = dataframe.withColumn(columna , col(columna).cast(DoubleType())) 
-        elif "-"  in first_value:
-            dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))  
-        elif "/" in first_value:
-            dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))
-        elif columna == "Date":
-            dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))
-        elif "True" in first_value:
-            dataframe = dataframe.withColumn(columna , col(columna).cast(BooleanType()))
-        elif "False" in first_value:
-            dataframe = dataframe.withColumn(columna , col(columna).cast(BooleanType()))
-        elif first_value.isnumeric():
-            dataframe = dataframe.withColumn(columna , col(columna).cast(IntegerType()))
-        else:
-            dataframe = dataframe.withColumn(columna , col(columna).cast(StringType()))   
-    return dataframe 
+    Argumentos:
+    dataframe (DataFrame): Dataframe de PySpark que se desea imputar
+    columna_imputacion (string): Nombre de la columna que se desea imputar
+    columna_auxiliar (string): Nombre de la columna auxiliar para calcular el promedio
+
+    Retorno:
+    DataFrame: Dataframe de PySpark con la columna de imputación llenada con el promedio de los valores 
+               de la columna de imputación agrupados por la columna auxiliar.
+    """
+    is_dataframe(dataframe) 
+    try:
+        dataframe = dataframe.select([col(c).cast("string") for c in dataframe.columns])
+        for columna in dataframe.columns: 
+            first_value = dataframe.select(col(columna)).first()[0]
+            if contains_letter(first_value):
+                dataframe = dataframe.withColumn(columna , col(columna).cast(StringType())) 
+                print(f'{columna} | string -> string')
+            elif '.' in first_value:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(DoubleType()))
+                print(f'{columna} | string -> double') 
+            elif "-"  in first_value:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))  
+                print(f'{columna} | string -> date')
+            elif "/" in first_value:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))
+            elif columna == "Date":
+                dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))
+                print(f'{columna} | string -> date')
+            elif "True" in first_value:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(BooleanType()))
+                print(f'{columna} | string -> bool')
+            elif "False" in first_value:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(BooleanType()))
+                print(f'{columna} | string -> bool')
+            elif first_value.isnumeric():
+                dataframe = dataframe.withColumn(columna , col(columna).cast(LongType()))
+                try:
+                    dataframe = dataframe.withColumn(columna , col(columna).cast((IntegerType())))
+                    print(f'{columna} | string -> integer')
+                except:
+                    dataframe = dataframe.withColumn(columna , col(columna).cast(LongType()))
+                    print(f'{columna} | string -> long')
+                    pass
+            else:
+                dataframe = dataframe.withColumn(columna , col(columna).cast(StringType()))   
+                print(f'{columna} | string -> string')
+        return dataframe
+    except Exception as e :
+        print('Ha ocurrido un erro al momento de inferir el schema: ' , e )
+
+
+def contains_letter(string):
+    return bool(re.search("[a-zA-Z]", string))
