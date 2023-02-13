@@ -1,8 +1,14 @@
+#######################################                                  
+# fecha: 14-01-2023                   #      
+# ultima modificacion: 14-02-2023     #  
+# Gabriel Aillapan                    #                
+#######################################
+
 from pyspark.sql.types import *
-from pyspark.sql.window import Window 
 from pyspark.sql.functions import *
-from pyspark.sql.dataframe import DataFrame
 from validaciones import is_dataframe 
+
+
 def imputacion(dataframe , columna , opcion , auxiliar = ''):
     """
     La función 'imputacion' es una función que permite reemplazar los valores nulos en un dataframe dado por un valor determinado. 
@@ -67,17 +73,20 @@ def imputacion(dataframe , columna , opcion , auxiliar = ''):
             elif data_type == StringType().simpleString():
                 lista_nulls = ['null' , '-' , '' , ' ', 'n' , '\\n' ]        
                 if opcion == 'moda': 
+                    print('opcion de moda')
                     mode_val = dataframe.filter(dataframe[columna].isNotNull()).groupBy(columna).count().sort('count', ascending=False).first()[0]
                     for i, row in enumerate(dataframe.toLocalIterator()):
                         if row[columna] in lista_nulls:
                             dataframe = dataframe.withColumn(columna, when(col(columna).isin(lista_nulls), mode_val).otherwise(col(columna)))  
                     return dataframe 
                 elif opcion == 'cero': 
+                    print('opcion de cero')
                     for i, row in enumerate(dataframe.toLocalIterator()):
                         if row[columna] in lista_nulls:
                             dataframe = dataframe.withColumn(columna, when(col(columna).isin(lista_nulls), '0').otherwise(col(columna)))  
                     return dataframe
                 elif opcion == 'desconocido':
+                    print('opcion de desconocido')
                     for i, row in enumerate(dataframe.toLocalIterator()):
                         if row[columna] in lista_nulls:
                             dataframe = dataframe.withColumn(columna, when(col(columna).isin(lista_nulls), 'desconocido').otherwise(col(columna)))  
@@ -94,12 +103,10 @@ def similitud(dataframe, columna_imputacion, columna_auxiliar):
     La función devuelve el dataframe con la columna de imputación llenada con el promedio de los valores 
     de la columna de imputación agrupados por la columna auxiliar. Si el valor de la columna de imputación
     no es nulo, se mantiene el mismo valor.
-
     Parameters:
     dataframe (DataFrame): Dataframe de PySpark que se desea imputar
     columna_imputacion (string): Nombre de la columna que se desea imputar
     columna_auxiliar (string): Nombre de la columna auxiliar para calcular el promedio
-
     Returns:
     DataFrame: Dataframe de PySpark con la columna de imputación llenada con el promedio de los valores 
                de la columna de imputación agrupados por la columna auxiliar.

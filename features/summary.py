@@ -1,8 +1,13 @@
+#######################################                                  
+# fecha: 14-01-2023                   #      
+# ultima modificacion: 14-02-2023     #  
+# Gabriel Aillapan                    #                
+#######################################
+
 from auxiliares.auxi import sel_num_cols
-from pyspark.sql import SparkSession
 from validaciones import is_dataframe , df_has_numtype , df_has_null
 
-def sumary(dataframe ):
+def sumary(dataframe , spark):
     """
     Esta función recibe un dataframe de PySpark. 
     La función devuelve un dataframe con un resumen estadistico de todas las
