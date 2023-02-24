@@ -11,17 +11,17 @@ from validaciones import is_dataframe
 import re 
 def inferSchema(dataframe):
     """
-    Esta función recibe un dataframe de PySpark, una columna a ser imputada y una columna auxiliar. 
-    La función devuelve el dataframe con la columna de imputación llenada con el promedio de los valores 
-    de la columna de imputación agrupados por la columna auxiliar. Si el valor de la columna de imputación
-    no es nulo, se mantiene el mismo valor.
+    La función 'inferSchema' es una función que infiere y transforma los tipos de datos de cada columna a los que corresponda.
+    La función recorre cada columna tomando el primer tipo de dato de la columna para evaluarlo, dependiendo de esa evaluación
+    el tipo de dato de la columna cambiará.
+    El patrón que sigue la función para identificar el tipo de dato es verificar caracteres que se obtenga de la muestra, debido a esto
+    la función primero transforma todas las columnas a string.
+
     Argumentos:
-    dataframe (DataFrame): Dataframe de PySpark que se desea imputar
-    columna_imputacion (string): Nombre de la columna que se desea imputar
-    columna_auxiliar (string): Nombre de la columna auxiliar para calcular el promedio
-    Retorno:
-    DataFrame: Dataframe de PySpark con la columna de imputación llenada con el promedio de los valores 
-               de la columna de imputación agrupados por la columna auxiliar.
+    dataframe (pyspark.sql.dataframe.DataFrame): Dataframe al que se le desea hacer un cambio de tipo de datos de cada columna.
+
+     Retorno
+    dataframe (pyspark.sql.dataframe.DataFrame): Dataframe con tipo de datos de las columnas inferidas.
     """
     is_dataframe(dataframe) 
     try:
@@ -35,8 +35,7 @@ def inferSchema(dataframe):
                 contador = first_value.count(".")
                 if '-' in first_value:
                     dataframe = dataframe.withColumn(columna , col(columna).cast(DateType()))  
-                    print(f'{columna} | string -> date')
-                
+                    print(f'{columna} | string -> date')     
                 elif contador == 2: 
                     dataframe = dataframe.withColumn(columna, regexp_replace(dataframe[columna], "[^a-zA-Z0-9]+", ""))
                     dataframe = dataframe.withColumn(columna , col(columna).cast((IntegerType()))) 

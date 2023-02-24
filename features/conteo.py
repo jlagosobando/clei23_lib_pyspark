@@ -11,15 +11,14 @@ from pyspark.sql.functions import count , sum , avg
 
 def group_count(dataframe, group_cols):
     """
-    Esta función recibe un dataframe de PySpar y una lista de columnas a las que se le hara un conteo,
-    se hara el calculo de la suma y el avg de las columnas numericas.
-    la función devuelve un dataframe con las columnas agregas de conteo, suma y avg de cada cada columna numerica.
-
+    Esta función recibe un dataframe de PySpar y una lista de columnas a las que se le hará un conteo,
+    se hará el cálculo de la suma y el avg de las columnas numéricas.
+    La función devuelve un dataframe con las columnas agregas de conteo, suma y avg de cada columna numerica.
     Parameters:
     dataframe (DataFrame): Dataframe de PySpark que se desea imputar
     group_cols (list): Lista de los nombres de las columnas para agrupar y contar
     Returns:
-    DataFrame: Dataframe de PySpark con las nuevas columnas de conteo y calculos matematicos.
+    DataFrame: Dataframe de PySpark con las nuevas columnas de conteo y cálculos matemáticos.
     """
     try:
         is_dataframe(dataframe)

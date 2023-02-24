@@ -13,16 +13,16 @@ from validaciones import is_dataframe
 def seguimiento(df, tiempo, seguimiento, tolerancia=50):
     """
     La función 'seguimiento' es una función que permite realizar un seguimiento a los valores de una columna mediante otra columna de tiempo.
-    Esta funcion realiza un seguimiento de los valores unicos de la columna seleccionada, calculando la variacion neta y variacion porcentual
-    respecto a un periodo de tiempo dado. Recibe un parametro de tolerancia que sirve como referencia para indicar cuando una variacion
-    porcentual esta fuera de los rangos esperados.
+    Esta función realiza un seguimiento de los valores únicos de la columna seleccionada, calculando la variación neta y variacion porcentual
+    respecto a un periodo de tiempo dado. Recibe un parámetro de tolerancia que sirve como referencia para indicar cuando una variación
+    porcentual está fuera de los rangos esperados.
     Argumentos:
-    df -- Dataframe a procesar.
-    tiempo -- Nombre de la columna en el dataframe que representa el tiempo.
-    seguimiento -- Nombre de la columna en el dataframe que representa el seguimiento.
-    tolerancia -- Valor opcional de tolerancia para los cálculos. Valor por defecto: 50.
+    dataframe (pyspark.sql.dataframe.DataFrame): Dataframe a procesar.
+    Tiempo (str): Nombre de la columna en el dataframe que representa el tiempo.
+    Seguimiento (str): Nombre de la columna en el dataframe que representa el seguimiento.
+    Tolerancia (int): Valor opcional de tolerancia para los cálculos. Valor por defecto: 50.
     Retorno:
-    Dataframe con los resultados de los cálculos.
+    dataframe (pyspark.sql.dataframe.DataFrame) con los resultados de los cálculos.
     Lanza una excepción con un mensaje de error si ocurre un error durante el procesamiento de los datos.
     """
 

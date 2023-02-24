@@ -19,7 +19,6 @@ def imputacion(dataframe , columna , opcion , auxiliar = ''):
     opcion (str): La opción de imputación que se desea aplicar. Puede ser "media", "mediana", "moda", "similitud", "cero", o "desconocido".
     auxiliar (str, optional): El nombre de una columna auxiliar que se utilizará en caso de que la opción elegida sea "similitud". 
                              Por defecto, no se proporciona.
-    
     Retorno:
     pyspark.sql.dataframe.DataFrame: Un nuevo dataframe con los valores nulos en la columna dada reemplazados por el valor especificado.
     
@@ -47,7 +46,6 @@ def imputacion(dataframe , columna , opcion , auxiliar = ''):
             data_type = data_type.simpleString()
             
             if data_type in tipos_numericos:
-                print('estoy dentro de el if de datos numericos')
                 if opcion == 'mediana':
                     print('opcion de mediana')
                     mean_val = dataframe.select(mean(columna)).first()[0]

@@ -7,7 +7,7 @@
 from auxiliares.auxi import sel_num_cols
 from validaciones import is_dataframe , df_has_numtype , df_has_null
 
-def sumary(dataframe , spark):
+def sumary(dataframe ):
     """
     Esta función recibe un dataframe de PySpark. 
     La función devuelve un dataframe con un resumen estadistico de todas las
@@ -16,10 +16,10 @@ def sumary(dataframe , spark):
     columnas tipo numericas la función no hara nada y retornara el mismo dataframe entregado.
     
     Argumento:
-    dataframe (DataFrame): Dataframe de PySpark que se desea imputar
+    dataframe (pyspark.sql.dataframe.DataFrame): Dataframe que desea obtener datos estadisticos.
     
     Retorno:
-    DataFrame: Dataframe de PySpark con el resumen estadistico mejorado en caso de tener columnas de tipo numericas.
+    dataframe (pyspark.sql.dataframe.DataFrame): Dataframe de PySpark con el resumen estadistico mejorado en caso de tener columnas de tipo numericas.
     """
     is_dataframe(dataframe) 
     if df_has_numtype(dataframe):
@@ -43,7 +43,7 @@ def sumary(dataframe , spark):
         new_row = spark.createDataFrame([lista_modas] , [*lista_columnas])
         new_row_anti_mode = spark.createDataFrame([lista_antimoda] , [*lista_columnas])
         df_columns.summary().unionAll(new_row).unionAll(new_row_anti_mode).show()
-        return df_columns.summary().unionAll(new_row).unionAll(new_row_anti_mode)
+        return df_columns.asummary().unionAll(new_row).unionAll(new_row_anti_mode)
     else : 
         print('El dataframe pyspark propocionado no tiene numeros')
         return dataframe
